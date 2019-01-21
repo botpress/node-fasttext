@@ -30,6 +30,7 @@
         "src/classifierWorker.cc",
         "src/query.h",
         "src/nnWorker.cc",
+        "src/vecWorker.cc",
         "src/wrapper.cc",
         "src/addon.cc"
       ],
