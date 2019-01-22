@@ -30,7 +30,10 @@ class Query : public Nan::ObjectWrap
     {
     }
 
-    ~Query() {}
+    ~Query()
+    {
+        delete wrapper_;
+    }
 
     static NAN_METHOD(New)
     {

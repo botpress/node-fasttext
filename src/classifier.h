@@ -35,7 +35,10 @@ class Classifier : public Nan::ObjectWrap
     {
     }
 
-    ~Classifier() {}
+    ~Classifier()
+    {
+        delete wrapper_;
+    }
 
     static NAN_METHOD(New)
     {
