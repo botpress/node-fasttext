@@ -164,12 +164,6 @@ class Classifier : public Nan::ObjectWrap
                 args.push_back(argument[j]);
             }
 
-            // std::cout << "Args <<<<< Params" << std::endl;
-            // for (std::string& a : args) {
-            //     std::cout << a << " " << std::endl;
-            // }
-            // std::cout << std::endl;
-
             Classifier *obj = Nan::ObjectWrap::Unwrap<Classifier>(info.Holder());
 
             if (command == "quantize")

@@ -1,7 +1,7 @@
 'use strict'
 const test = require('tape')
 const path = require('path')
-const fastText = require('../../built')
+const fastText = require('../../index.js')
 
 test('fastText classifier', function(t) {
   t.plan(3)

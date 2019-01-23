@@ -1,7 +1,7 @@
 'use strict'
 const test = require('tape')
 const path = require('path')
-const fastText = require('../../built')
+const fastText = require('../../index')
 
 test('fastText trainer', function(t) {
   t.plan(1)
@@ -17,7 +17,7 @@ test('fastText trainer', function(t) {
       loss: 'softmax',
       dim: 200,
       bucket: 2000000,
-      verbose: 0
+      verbose: 2
     })
     .then(res => {
       console.log('model info after training:', res)
@@ -40,7 +40,7 @@ test('fastText quantize', function(t) {
       qout: true,
       retrain: true,
       cutoff: 1000,
-      verbose: 0
+      verbose: 2
     })
     .then(res => {
       console.log(res)
