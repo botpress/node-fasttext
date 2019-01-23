@@ -13,6 +13,8 @@
         "fastText/src/matrix.cc",
         "fastText/src/model.h",
         "fastText/src/model.cc",
+		"fastText/src/meter.h",
+        "fastText/src/meter.cc",
         "fastText/src/productquantizer.h",
         "fastText/src/productquantizer.cc",
         "fastText/src/qmatrix.h",
