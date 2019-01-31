@@ -114,12 +114,13 @@ std::map<std::string, std::string> Wrapper::loadModel(std::string filename)
 std::map<std::string, std::string> Wrapper::loadModel(std::istream &in)
 {
     args_ = std::make_shared<Args>();
+    args_->load(in);
+
     dict_ = std::make_shared<Dictionary>(args_);
     input_ = std::make_shared<Matrix>();
     output_ = std::make_shared<Matrix>();
     qinput_ = std::make_shared<QMatrix>();
     qoutput_ = std::make_shared<QMatrix>();
-    args_->load(in);
 
     dict_->load(in);
 

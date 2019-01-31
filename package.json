@@ -3,6 +3,7 @@
   "version": "0.2.3",
   "description": "A nodejs binding for fasttext representation and classification",
   "main": "./index.js",
+  "bin": "./tape.js",
   "scripts": {
     "config": "node-pre-gyp configure --msvs_version=2015",
     "build": "node-pre-gyp rebuild",

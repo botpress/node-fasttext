@@ -10,8 +10,8 @@ Nodejs binding for fasttext representation and classification.
 
 > This is a link to the Facebook [fastText](https://github.com/facebookresearch/fastText). A Library for efficient text classification and representation learning.
 
-* FASTTEXT_VERSION = 12;
-* FASTTEXT_FILEFORMAT_MAGIC_INT32 = 793712314;
+- FASTTEXT_VERSION = 12;
+- FASTTEXT_FILEFORMAT_MAGIC_INT32 = 793712314;
 
 # Installation
 
@@ -24,49 +24,47 @@ Using npm:
 According to [fasttext.cc](https://fasttext.cc/docs/en/supervised-tutorial.html). We have a simple classifier for executing prediction models about `cooking` from stackexchange questions:
 
 ```js
-const path = require('path');
-const fastText = require('fasttext');
+const path = require('path')
+const fastText = require('fasttext')
 
-const model = path.resolve(__dirname, './model_cooking.bin');
-const classifier = new fastText.Classifier(model);
+const model = path.resolve(__dirname, './model_cooking.bin')
+const classifier = new fastText.Classifier(model)
 
-classifier.predict('Why not put knives in the dishwasher?', 5)
-    .then((res) => {
-        if (res.length > 0) {
-            let tag = res[0].label; // __label__knives
-            let confidence = res[0].value // 0.8787146210670471
-            console.log('classify', tag, confidence, res);
-        } else {
-            console.log('No matches');
-        }
-    });
+classifier.predict('Why not put knives in the dishwasher?', 5).then(res => {
+  if (res.length > 0) {
+    let tag = res[0].label // __label__knives
+    let confidence = res[0].value // 0.8787146210670471
+    console.log('classify', tag, confidence, res)
+  } else {
+    console.log('No matches')
+  }
+})
 ```
 
 The model haved trained before with the followings params:
 
 ```js
-const path = require('path');
-const fastText = require('fasttext');
+const path = require('path')
+const fastText = require('fasttext')
 
-let data = path.resolve(path.join(__dirname, '../data/cooking.train.txt'));
-let model = path.resolve(path.join(__dirname, '../data/cooking.model'));
+let data = path.resolve(path.join(__dirname, '../data/cooking.train.txt'))
+let model = path.resolve(path.join(__dirname, '../data/cooking.model'))
 
-let classifier = new fastText.Classifier();
+let classifier = new fastText.Classifier()
 let options = {
-    input: data,
-    output: model,
-    loss: "softmax",
-    dim: 200,
-    bucket: 2000000
+  input: data,
+  output: model,
+  loss: 'softmax',
+  dim: 200,
+  bucket: 2000000
 }
 
-classifier.train('supervised', options)
-    .then((res) => {
-        console.log('model info after training:', res)
-        // Input  <<<<< C:\projects\node-fasttext\test\data\cooking.train.txt
-        // Output >>>>> C:\projects\node-fasttext\test\data\cooking.model.bin
-        // Output >>>>> C:\projects\node-fasttext\test\data\cooking.model.vec
-    });
+classifier.train('supervised', options).then(res => {
+  console.log('model info after training:', res)
+  // Input  <<<<< C:\projects\node-fasttext\test\data\cooking.train.txt
+  // Output >>>>> C:\projects\node-fasttext\test\data\cooking.model.bin
+  // Output >>>>> C:\projects\node-fasttext\test\data\cooking.model.vec
+})
 ```
 
 Or you can train directly from the command line with fasttext builded from official source:
@@ -92,28 +90,32 @@ Number of examples: 3000
 Simple class for searching nearest neighbors:
 
 ```js
-const path = require('path');
-const fastText = require('fasttext');
+const path = require('path')
+const fastText = require('fasttext')
 
-const model = path.resolve(__dirname, './skipgram.bin');
-const query = new fastText.Query(model);
+const model = path.resolve(__dirname, './skipgram.bin')
+const query = new fastText.Query(model)
 
 query.nn('word', 5, (err, res) => {
-    if (err) {
-        console.error(err);
-    } else if (res.length > 0) {
-        let tag = res[0].label; // letter
-        let confidence = res[0].value // 0.99992
-        console.log('Nearest neighbor', tag, confidence, res);
-    } else {
-        console.log('No matches');
-    }
-});
+  if (err) {
+    console.error(err)
+  } else if (res.length > 0) {
+    let tag = res[0].label // letter
+    let confidence = res[0].value // 0.99992
+    console.log('Nearest neighbor', tag, confidence, res)
+  } else {
+    console.log('No matches')
+  }
+})
 ```
 
 # Build from source
 
 See [Installation Prerequisites](https://github.com/nodejs/node-gyp#installation).
+
+Make sure you checked-out fastText submodule: `git submodule update --init`
+
+> If you're building for Linux, run `./linux-build.sh` before
 
 ```bash
 # install dependencies and tools
