@@ -303,7 +303,6 @@ std::vector<PredictResult> Wrapper::nn(std::string query, int32_t k)
 
 std::vector<double> Wrapper::getWordVector(std::string query)
 {
-  std::cout << args_->dim << std::endl;
   Vector queryVec(args_->dim);
   std::set<std::string> banSet;
   banSet.clear();
