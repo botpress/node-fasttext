@@ -4,7 +4,9 @@
 #include <napi.h>
 #include "wrapper.h"
 #include "nnWorker.h"
+#include "vecWorker.h"
 #include "node-util.h"
+#include "utils.h"
 
 class FasttextQuery : public Napi::ObjectWrap<FasttextQuery>
 {
@@ -23,6 +25,7 @@ public:
 private:
   static Napi::FunctionReference constructor;
   Napi::Value Nn(const Napi::CallbackInfo &info);
+  Napi::Value getWordVector(const Napi::CallbackInfo &info);
 
   Wrapper *wrapper_;
 };

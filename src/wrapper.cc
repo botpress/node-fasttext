@@ -301,6 +301,24 @@ std::vector<PredictResult> Wrapper::nn(std::string query, int32_t k)
   return findNN(queryVec, k, banSet);
 }
 
+std::vector<double> Wrapper::getWordVector(std::string query)
+{
+  std::cout << args_->dim << std::endl;
+  Vector queryVec(args_->dim);
+  std::set<std::string> banSet;
+  banSet.clear();
+  banSet.insert(query);
+  getVector(queryVec, query);
+  std::vector<double> ret;
+
+  for (int64_t it = 0; it != args_->dim; it++)
+  {
+    ret.push_back(queryVec[it]);
+  }
+
+  return ret;
+}
+
 std::vector<PredictResult> Wrapper::predict(std::string sentence, int32_t k)
 {
 

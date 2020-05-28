@@ -32,7 +32,9 @@
                 "src/wrapper.cc",
                 "src/classifier.cc",
                 "src/query.cc",
-                "src/addon.cc"
+                "src/addon.cc",
+                "src/utils.cc",
+                "src/vecWorker.cc"
             ],
             "defines": [
                 "NAPI_VERSION=<(napi_build_version)",
