@@ -46,7 +46,7 @@ void VecWorker::OnOK()
 {
   Napi::Env env = Env();
   Napi::HandleScope scope(env);
-  Napi::Number result = Napi::Number::New(env, 69);
+  Napi::Array result = napi_utils::arrayToNapi(env, result_, result_.size());
 
   deferred_.Resolve(result);
 
