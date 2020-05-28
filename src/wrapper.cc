@@ -361,8 +361,11 @@ std::map<std::string, std::string> Wrapper::train(const std::vector<std::string>
     throw "Input file is not exist.";
   }
 
-  std::cout << "Input  <<<<< " << a->input << std::endl;
-  std::cout << "Output >>>>> " << a->output + ".bin" << std::endl;
+  if (a->verbose > 0)
+  {
+    std::cout << "Input  <<<<< " << a->input << std::endl;
+    std::cout << "Output >>>>> " << a->output + ".bin" << std::endl;
+  }
 
   fastText_.train(a);
   fastText_.saveModel();
@@ -380,9 +383,12 @@ std::map<std::string, std::string> Wrapper::quantize(const std::vector<std::stri
     throw "Input file is not exist.";
   }
 
-  std::cout << "Input: " << a->input << std::endl;
-  std::cout << "Model: " << a->output + ".bin" << std::endl;
-  std::cout << "Quantized: " << a->output + ".ftz" << std::endl;
+  if (a->verbose > 0)
+  {
+    std::cout << "Input: " << a->input << std::endl;
+    std::cout << "Model: " << a->output + ".bin" << std::endl;
+    std::cout << "Quantized: " << a->output + ".ftz" << std::endl;
+  }
 
   // parseArgs checks if a->output is given.
   fastText_.loadModel(a->output + ".bin");
