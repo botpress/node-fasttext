@@ -1,7 +1,7 @@
-'use strict';
-const test = require('tape');
-const path = require('path');
-const fastText = require('../../index');
+'use strict'
+const test = require('tape')
+const path = require('path')
+const fastText = require('../../index')
 
 test('fastText trainer', function (t) {
   t.plan(1)
