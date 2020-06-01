@@ -7,6 +7,11 @@ void LoadModelWorker::Execute()
   {
     result_ = wrapper_->loadModel(filename);
   }
+  catch (const char *str)
+  {
+    std::cout << "Exception: " << str << std::endl;
+    SetError(str);
+  }
   catch (std::string errorMessage)
   {
     SetError(errorMessage.c_str());

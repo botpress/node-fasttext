@@ -2,23 +2,24 @@
 #ifndef VEC_WORKER_H
 #define VEC_WORKER_H
 
-#include <nan.h>
+#include <napi.h>
 #include "wrapper.h"
+#include "utils.h"
 
-class VecWorker : public Nan::AsyncWorker
+class VecWorker : public Napi::AsyncWorker
 {
 public:
-  VecWorker(std::string query, Wrapper *wrapper)
-      : Nan::AsyncWorker(new Nan::Callback()),
-        query_(query),
-        wrapper_(wrapper),
-        result_(){};
+  VecWorker(
+      std::string query,
+      Wrapper *wrapper,
+      Napi::Promise::Deferred deferred,
+      Napi::Function &callback);
 
-  ~VecWorker(){};
+  Napi::Promise::Deferred deferred_;
 
   void Execute();
-  void HandleOKCallback();
-  void HandleErrorCallback();
+  void OnOK();
+  void OnError(const Napi::Error &e);
 
 private:
   std::string query_;

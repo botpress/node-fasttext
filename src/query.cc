@@ -6,7 +6,8 @@ Napi::Object FasttextQuery::Init(Napi::Env env, Napi::Object exports)
 {
   Napi::HandleScope scope(env);
   Napi::Function func = DefineClass(env, "FasttextQuery",
-                                    {InstanceMethod("nn", &FasttextQuery::Nn)});
+                                    {InstanceMethod("nn", &FasttextQuery::Nn),
+                                     InstanceMethod("getWordVector", &FasttextQuery::getWordVector)});
 
   constructor = Napi::Persistent(func);
   constructor.SuppressDestruct();
@@ -62,6 +63,32 @@ Napi::Value FasttextQuery::Nn(const Napi::CallbackInfo &info)
   Napi::String query = info[0].As<Napi::String>();
 
   NnWorker *worker = new NnWorker(query, k, this->wrapper_, deferred, callback);
+  worker->Queue();
+
+  return worker->deferred_.Promise();
+}
+
+Napi::Value FasttextQuery::getWordVector(const Napi::CallbackInfo &info)
+{
+  Napi::Env env = info.Env();
+  Napi::HandleScope scope(env);
+
+  if (info.Length() == 0 || !info[0].IsString())
+  {
+    Napi::TypeError::New(env, "query must be a string").ThrowAsJavaScriptException();
+  }
+
+  Napi::Function callback = Napi::Function::New(env, EmptyCallback);
+  if (info.Length() > 1 && info[1].IsFunction())
+  {
+    callback = info[1].As<Napi::Function>();
+  }
+
+  Napi::Promise::Deferred deferred = Napi::Promise::Deferred::New(info.Env());
+  Napi::String napiQuery = info[0].As<Napi::String>();
+  std::string query = napiQuery.Utf8Value();
+
+  VecWorker *worker = new VecWorker(query, this->wrapper_, deferred, callback);
   worker->Queue();
 
   return worker->deferred_.Promise();

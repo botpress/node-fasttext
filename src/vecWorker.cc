@@ -1,8 +1,14 @@
-
-
-#include <iostream>
 #include "vecWorker.h"
-#include <v8.h>
+#include "node-util.h"
+
+VecWorker::VecWorker(std::string query,
+                     Wrapper *wrapper,
+                     Napi::Promise::Deferred deferred,
+                     Napi::Function &callback) : AsyncWorker(callback), deferred_(deferred)
+{
+  this->query_ = query;
+  this->wrapper_ = wrapper;
+}
 
 void VecWorker::Execute()
 {
@@ -10,46 +16,43 @@ void VecWorker::Execute()
   {
     wrapper_->loadModel();
     wrapper_->precomputeWordVectors();
-    result_ = wrapper_->getWordVector(query_);
+    result_ = this->wrapper_->getWordVector(query_);
   }
   catch (std::string errorMessage)
   {
-    std::cout << "Exception: " << errorMessage << std::endl;
-    SetErrorMessage(errorMessage.c_str());
+    SetError(errorMessage.c_str());
   }
   catch (const char *str)
   {
-    std::cout << "Exception: " << str << std::endl;
-    SetErrorMessage(str);
+    SetError(str);
   }
   catch (const std::exception &e)
   {
-    std::cout << "Exception: " << e.what() << std::endl;
-    SetErrorMessage(e.what());
+    SetError(e.what());
   }
 }
 
-void VecWorker::HandleErrorCallback()
+void VecWorker::OnError(const Napi::Error &e)
 {
-  Nan::HandleScope scope;
+  Napi::HandleScope scope(Env());
+  Napi::String error = Napi::String::New(Env(), e.Message());
+  deferred_.Reject(error);
 
-  auto res = GetFromPersistent("key").As<v8::Promise::Resolver>();
-  res->Reject(Nan::GetCurrentContext(), Nan::Error(ErrorMessage()));
-  v8::Isolate::GetCurrent()->RunMicrotasks();
+  // Call empty function
+  Callback().Call({error});
 }
 
-void VecWorker::HandleOKCallback()
+void VecWorker::OnOK()
 {
-  Nan::HandleScope scope;
-  v8::Local<v8::Array> result = Nan::New<v8::Array>(result_.size());
+  Napi::Env env = Env();
+  Napi::HandleScope scope(env);
+  Napi::Array result = napi_utils::arrayToNapi(env, result_, result_.size());
 
-  for (unsigned int i = 0; i < result_.size(); i++)
+  deferred_.Resolve(result);
+
+  // Call empty function
+  if (!Callback().IsEmpty())
   {
-    result->Set(i, Nan::New<v8::Number>(result_[i]));
+    Callback().Call({env.Null(), result});
   }
-
-  // promise resolver
-  auto res = GetFromPersistent("key").As<v8::Promise::Resolver>();
-  res->Resolve(Nan::GetCurrentContext(), result);
-  v8::Isolate::GetCurrent()->RunMicrotasks();
 }

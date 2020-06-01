@@ -242,15 +242,15 @@ void Wrapper::precomputeWordVectors()
     return;
   }
   Matrix wordVectors(dict_->nwords(), args_->dim);
-  wordVectors_ = wordVectors;
+  // wordVectors_ = Matrix(dict_->nwords(), args_->dim);
   Vector vec(args_->dim);
-  wordVectors_.zero();
+  // wordVectors_.zero();
   for (int32_t i = 0; i < dict_->nwords(); i++)
   {
     std::string word = dict_->getWord(i);
     getVector(vec, word);
     real norm = vec.norm();
-    wordVectors_.addRow(vec, i, 1.0 / norm);
+    // wordVectors_.addRow(vec, i, 1.0 / norm);
   }
   isPrecomputed_ = true;
   precomputeMtx_.unlock();
@@ -301,6 +301,23 @@ std::vector<PredictResult> Wrapper::nn(std::string query, int32_t k)
   return findNN(queryVec, k, banSet);
 }
 
+std::vector<double> Wrapper::getWordVector(std::string query)
+{
+  Vector queryVec(args_->dim);
+  std::set<std::string> banSet;
+  banSet.clear();
+  banSet.insert(query);
+  getVector(queryVec, query);
+  std::vector<double> ret;
+
+  for (int64_t it = 0; it != args_->dim; it++)
+  {
+    ret.push_back(queryVec[it]);
+  }
+
+  return ret;
+}
+
 std::vector<PredictResult> Wrapper::predict(std::string sentence, int32_t k)
 {
 
@@ -308,7 +325,7 @@ std::vector<PredictResult> Wrapper::predict(std::string sentence, int32_t k)
   std::vector<int32_t> words, labels;
   std::istringstream in(sentence);
 
-  dict_->getLine(in, words, labels, model_->rng);
+  dict_->getLine(in, words, labels);
 
   // std::cerr << "Got line!" << std::endl;
 
@@ -320,7 +337,7 @@ std::vector<PredictResult> Wrapper::predict(std::string sentence, int32_t k)
   Vector hidden(args_->dim);
   Vector output(dict_->nlabels());
   std::vector<std::pair<real, int32_t>> modelPredictions;
-  model_->predict(words, k, modelPredictions, hidden, output);
+  model_->predict(words, k, 0.0001, modelPredictions, hidden, output);
 
   PredictResult response;
 
@@ -335,41 +352,47 @@ std::vector<PredictResult> Wrapper::predict(std::string sentence, int32_t k)
 
 std::map<std::string, std::string> Wrapper::train(const std::vector<std::string> args)
 {
-  std::shared_ptr<Args> a = std::make_shared<Args>();
-  a->parseArgs(args);
+  Args a;
+  a.parseArgs(args);
 
-  std::string inputFilename = a->input;
+  std::string inputFilename = a.input;
   if (!fileExist(inputFilename))
   {
     throw "Input file is not exist.";
   }
 
-  std::cout << "Input  <<<<< " << a->input << std::endl;
-  std::cout << "Output >>>>> " << a->output + ".bin" << std::endl;
+  if (a.verbose > 0)
+  {
+    std::cout << "Input  <<<<< " << a.input << std::endl;
+    std::cout << "Output >>>>> " << a.output + ".bin" << std::endl;
+  }
 
   fastText_.train(a);
   fastText_.saveModel();
   fastText_.saveVectors();
-  return loadModel(a->output + ".bin");
+  return loadModel(a.output + ".bin");
 }
 
 std::map<std::string, std::string> Wrapper::quantize(const std::vector<std::string> args)
 {
-  std::shared_ptr<Args> a = std::make_shared<Args>();
-  a->parseArgs(args);
+  Args a;
+  a.parseArgs(args);
 
-  if (!fileExist(a->input))
+  if (!fileExist(a.input))
   {
     throw "Input file is not exist.";
   }
 
-  std::cout << "Input: " << a->input << std::endl;
-  std::cout << "Model: " << a->output + ".bin" << std::endl;
-  std::cout << "Quantized: " << a->output + ".ftz" << std::endl;
+  if (a.verbose > 0)
+  {
+    std::cout << "Input: " << a.input << std::endl;
+    std::cout << "Model: " << a.output + ".bin" << std::endl;
+    std::cout << "Quantized: " << a.output + ".ftz" << std::endl;
+  }
 
-  // parseArgs checks if a->output is given.
-  fastText_.loadModel(a->output + ".bin");
+  // parseArgs checks if a.output is given.
+  fastText_.loadModel(a.output + ".bin");
   fastText_.quantize(a);
   fastText_.saveModel();
-  return loadModel(a->output + ".ftz");
+  return loadModel(a.output + ".ftz");
 }
