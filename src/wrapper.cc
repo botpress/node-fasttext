@@ -40,16 +40,7 @@ bool Wrapper::fileExist(const std::string &filename)
 
 void Wrapper::getVector(Vector &vec, const std::string &word)
 {
-  const std::vector<int32_t> &ngrams = dict_->getSubwords(word);
-  vec.zero();
-  for (auto it = ngrams.begin(); it != ngrams.end(); ++it)
-  {
-    vec.addRow(*input_, *it);
-  }
-  if (ngrams.size() > 0)
-  {
-    vec.mul(1.0 / ngrams.size());
-  }
+  fastText_.getWordVector(vec, word);
 }
 
 bool Wrapper::checkModel(std::istream &in)
@@ -113,50 +104,11 @@ std::map<std::string, std::string> Wrapper::loadModel(std::string filename)
 
 std::map<std::string, std::string> Wrapper::loadModel(std::istream &in)
 {
-  args_ = std::make_shared<Args>();
-  dict_ = std::make_shared<Dictionary>(args_);
-  input_ = std::make_shared<Matrix>();
-  output_ = std::make_shared<Matrix>();
-  qinput_ = std::make_shared<QMatrix>();
-  qoutput_ = std::make_shared<QMatrix>();
+  auto modelInfo = fastText_.loadAndGetModel(in);
 
-  args_->load(in);
-  dict_->load(in);
-
-  bool quant_input;
-  in.read((char *)&quant_input, sizeof(bool));
-  if (quant_input)
-  {
-    quant_ = true;
-    qinput_->load(in);
-  }
-  else
-  {
-    input_->load(in);
-  }
-
-  in.read((char *)&args_->qout, sizeof(bool));
-  if (quant_ && args_->qout)
-  {
-    qoutput_->load(in);
-  }
-  else
-  {
-    output_->load(in);
-  }
-
-  model_ = std::make_shared<Model>(input_, output_, args_, 0);
-  model_->quant_ = quant_;
-  model_->setQuantizePointer(qinput_, qoutput_, args_->qout);
-
-  if (args_->model == model_name::sup)
-  {
-    model_->setTargetCounts(dict_->getCounts(entry_type::label));
-  }
-  else
-  {
-    model_->setTargetCounts(dict_->getCounts(entry_type::word));
-  }
+  args_ = modelInfo.args;
+  dict_ = modelInfo.dict;
+  model_ = modelInfo.model;
 
   return getModelInfo();
 }
@@ -241,7 +193,7 @@ void Wrapper::precomputeWordVectors()
     precomputeMtx_.unlock();
     return;
   }
-  Matrix wordVectors(dict_->nwords(), args_->dim);
+  DenseMatrix wordVectors(dict_->nwords(), args_->dim);
   // wordVectors_ = Matrix(dict_->nwords(), args_->dim);
   Vector vec(args_->dim);
   // wordVectors_.zero();
@@ -337,7 +289,7 @@ std::vector<PredictResult> Wrapper::predict(std::string sentence, int32_t k)
   Vector hidden(args_->dim);
   Vector output(dict_->nlabels());
   std::vector<std::pair<real, int32_t>> modelPredictions;
-  model_->predict(words, k, 0.0001, modelPredictions, hidden, output);
+  fastText_.predict(k, words, modelPredictions, 0.0001);
 
   PredictResult response;
 

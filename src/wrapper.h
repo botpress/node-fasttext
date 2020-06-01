@@ -11,14 +11,17 @@
 #include <map>
 #include <mutex>
 
+#include "./fasttext_napi.h"
+
 #include "../fastText/src/fasttext.h"
+#include "../fastText/src/quantmatrix.h"
 
 using fasttext::Args;
+using fasttext::DenseMatrix;
 using fasttext::Dictionary;
 using fasttext::FastText;
-using fasttext::Matrix;
 using fasttext::Model;
-using fasttext::QMatrix;
+using fasttext::QuantMatrix;
 using fasttext::real;
 using fasttext::Vector;
 
@@ -34,15 +37,9 @@ private:
   std::shared_ptr<Args> args_;
   std::shared_ptr<Dictionary> dict_;
 
-  std::shared_ptr<Matrix> input_;
-  std::shared_ptr<Matrix> output_;
-
-  std::shared_ptr<QMatrix> qinput_;
-  std::shared_ptr<QMatrix> qoutput_;
-
   std::shared_ptr<Model> model_;
-  Matrix wordVectors_;
-  FastText fastText_;
+  DenseMatrix wordVectors_;
+  FastTextNapi fastText_;
 
   // std::atomic<int64_t> tokenCount;
   // clock_t start;
