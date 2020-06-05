@@ -48,7 +48,7 @@
                 "src/fasttext_napi.h"
             ],
             "defines": [
-                "NAPI_VERSION=<(napi_build_version)",
+                "NAPI_VERSION=3",
             ],
             "include_dirs": [
                 "<!@(node -p \"require('node-addon-api').include\")"
@@ -79,7 +79,7 @@
                 ["OS=='mac'", {
                     "cflags+": ["-stdlib=libc++"],
                     "xcode_settings": {
-                        "OTHER_CPLUSPLUSFLAGS": ["-std=c++11", "-stdlib=libc++", "-pthread"],
+                        "OTHER_CPLUSPLUSFLAGS": ["-std=c++11", "-stdlib=libc++", "-pthread", "-frtti"],
                         "OTHER_LDFLAGS": ["-stdlib=libc++"],
                         "GCC_ENABLE_CPP_EXCEPTIONS": "YES",
                         "MACOSX_DEPLOYMENT_TARGET": "10.7",
@@ -114,12 +114,7 @@
         },
         {
             "target_name": "action_after_build",
-            "type": "none",
-            "dependencies": ["<(module_name)"],
-            "copies": [{
-                "files": ["<(PRODUCT_DIR)/<(module_name).node"],
-                "destination": "<(module_path)"
-            }]
+            "type": "none"
         }
     ]
 }
