@@ -4,7 +4,7 @@
 
 #include <napi.h>
 #include "wrapper.h"
-#include "utils.h"
+#include "binding-utils.h"
 
 class VecWorker : public Napi::AsyncWorker
 {

@@ -6,7 +6,7 @@
 #include "nnWorker.h"
 #include "vecWorker.h"
 #include "node-util.h"
-#include "utils.h"
+#include "binding-utils.h"
 
 class FasttextQuery : public Napi::ObjectWrap<FasttextQuery>
 {

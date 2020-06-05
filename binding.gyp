@@ -42,7 +42,7 @@
                 "src/classifier.cc",
                 "src/query.cc",
                 "src/addon.cc",
-                "src/utils.cc",
+                "src/binding-utils.cc",
                 "src/vecWorker.cc",
                 "src/fasttext_napi.cc",
                 "src/fasttext_napi.h"

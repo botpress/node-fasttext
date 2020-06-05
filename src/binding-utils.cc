@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "binding-utils.h"
 
 Napi::Array napi_utils::arrayToNapi(Napi::Env env, std::vector<double> array, unsigned int array_size)
 {
