@@ -87,29 +87,46 @@
                         "CLANG_CXX_LIBRARY": "libc++"
                     },
                 }],
-                [
-                    "OS=='win'", {
-                        "cflags": [
-                            "-Wall"
-                        ],
-                        "defines": [
-                            "WIN"
-                        ],
-                        "msvs_settings": {
+                            ['OS=="win"', {
+                            'configurations': {
+                            'Debug': {
+                            'msvs_settings': {
                             "VCCLCompilerTool": {
-                                "ExceptionHandling": "2",
-                                "DisableSpecificWarnings": [
-                                    "4244"
-                                ],
+                            'RuntimeTypeInfo': 'true',
+                            'EnableFunctionLevelLinking': 'true',
+                            "ExceptionHandling": "2",
+                            "DisableSpecificWarnings": [
+                            "4244"
+                            ],
                             },
                             "VCLinkerTool": {
-                                "LinkTimeCodeGeneration": 1,
-                                "OptimizeReferences": 2,
-                                "EnableCOMDATFolding": 2,
-                                "LinkIncremental": 1,
+                            "LinkTimeCodeGeneration": 1,
+                            "OptimizeReferences": 2,
+                            "EnableCOMDATFolding": 2,
+                            "LinkIncremental": 1,
                             }
-                        }
-                    }]
+                            }
+                            }, # Debug
+                            'Release': {
+                            'msvs_settings': {
+                            "VCCLCompilerTool": {
+                            'RuntimeTypeInfo': 'true',
+                            'EnableFunctionLevelLinking': 'true',
+                            "ExceptionHandling": "2",
+                            "DisableSpecificWarnings": [
+                            "4244"
+                            ],
+                            },
+                            "VCLinkerTool": {
+                            "LinkTimeCodeGeneration": 1,
+                            "OptimizeReferences": 2,
+                            "EnableCOMDATFolding": 2,
+                            "LinkIncremental": 1,
+                            }
+                            }
+                            }, # Release
+                            }, # configurations
+                            }], # OS=="win"
             ]
         },
         {

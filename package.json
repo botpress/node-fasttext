@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@types/node": "^10.12.18",
-    "node-gyp": "^5.0.0",
+    "node-gyp": "^7.0.0",
     "tap-spec": "^5.0.0",
     "tape": "^4.11.0"
   },
