@@ -64,7 +64,7 @@ Napi::Value FasttextClassifier::LoadModel(const Napi::CallbackInfo &info)
   Napi::Promise::Deferred deferred = Napi::Promise::Deferred::New(info.Env());
   Napi::String filename = info[0].As<Napi::String>();
 
-  std::cout << "Preparing load model from: " << filename.Utf8Value() << std::endl;
+  // std::cout << "Preparing load model from: " << filename.Utf8Value() << std::endl;
 
   LoadModelWorker *worker = new LoadModelWorker(filename, this->wrapper_, deferred, callback);
   worker->Queue();

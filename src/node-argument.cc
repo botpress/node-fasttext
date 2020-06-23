@@ -129,7 +129,6 @@ CArgument NodeArgument::NapiObjectToCArgument(Napi::Env env, Napi::Object obj)
       if (!value.IsBoolean())
       {
         std::string valueValue = value.ToString().Utf8Value();
-        // std::cout << "OKKKKK!!!" << keyValue << ": " << valueValue << std::endl;
         char *theValue = (char *)valueValue.c_str();
         NodeArgument::AddStringArgument(&arguments, &count, theValue);
       }
